@@ -5,17 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SensaBook - Inicio</title>
     <link rel="stylesheet" href="styles.css">
-    
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-database.js"></script>
 </head>
 <body>
 
     <div class="header">
         <h1>SensaBook</h1>
         <button onclick="location.href='perfil.html'" class="button">Perfil</button>
-        <span>Último estado: <span id="estado-actual">Feliz</span></span>
+        <button onclick="location.href='blog.html'" class="button">Blog</button>
+        <!-- Mostrar si la sesión está iniciada o no -->
+        <span id="username-display" style="display:none;">Bienvenido, <span id="username"></span></span>
     </div>
 
     <div class="form-container">
@@ -39,72 +37,75 @@
     <div id="post-recommendation" class="post-recommendation"></div>
 
     <script>
-        // Configuración de Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyBr-pWDSHphwq4w3W1uwuDTNvbqypR5HRE",
-            authDomain: "sensabook2.firebaseapp.com",
-            databaseURL: "https://sensabook2-default-rtdb.firebaseio.com",
-            projectId: "sensabook2",
-            storageBucket: "sensabook2.appspot.com",
-            messagingSenderId: "401163114062",
-            appId: "1:401163114062:web:4f05bb39ec7d9d8df6551f",
-            measurementId: "G-PEFML6K5Y1"
-        };
+        // Mostrar el nombre de usuario si la sesión está iniciada
+        function mostrarUsuario() {
+            const username = localStorage.getItem('username');
+            const usernameDisplay = document.getElementById("username-display");
+            const usernameElement = document.getElementById("username");
 
-        // Inicializar Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const database = firebase.database(app);
+            if (username) {
+                usernameElement.textContent = username;
+                usernameDisplay.style.display = "inline"; // Mostrar el nombre de usuario
+            } else {
+                usernameDisplay.style.display = "none"; // Ocultar si no hay sesión iniciada
+            }
+        }
 
         // Función para enviar el estado emocional
         function enviarEstado() {
             var estado = document.getElementById("estado-animo").value;
             var razon = document.getElementById("razon").value;
-            var username = localStorage.getItem('username');
+            var username = localStorage.getItem('username'); // Asegurándonos de que el nombre de usuario esté disponible
 
             if (estado && username) {
-                // Guardar estado en la base de datos Firebase
-                firebase.database().ref('estados').push({
-                    usuario: username,
-                    estado: estado,
-                    razon: razon
-                });
+                // Guardar estado en el archivo JSON (en este caso, simplemente lo haremos en un array local)
+                fetch('estados.json')
+                    .then(response => response.json())
+                    .then(data => {
+                        data.push({
+                            usuario: username,
+                            estado: estado,
+                            razon: razon
+                        });
+                        
+                        // Guardar de nuevo el archivo JSON con el estado añadido
+                        const jsonData = JSON.stringify(data);
+                        const blob = new Blob([jsonData], { type: 'application/json' });
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(blob);
+                        link.download = 'estados.json';
+                        link.click();
+                    });
 
-                // Confirmar publicación y actualizar interfaz
                 alert("Estado publicado correctamente.");
+                mostrarEstados(); // Actualizar la vista para mostrar el estado recién publicado
             } else {
-                alert("Por favor, escribe tu estado de ánimo.");
+                alert("Por favor, escribe tu estado de ánimo y asegúrate de que hayas iniciado sesión.");
             }
         }
 
         // Función para mostrar los últimos estados
         function mostrarEstados() {
-            var estadosRef = firebase.database().ref('estados');
-            estadosRef.on('value', function(snapshot) {
-                var estados = snapshot.val();
-                var ultimosEstadosDiv = document.getElementById("ultimos-estados");
-                ultimosEstadosDiv.innerHTML = '';
+            fetch('estados.json')
+                .then(response => response.json())
+                .then(data => {
+                    const ultimosEstadosDiv = document.getElementById("ultimos-estados");
+                    ultimosEstadosDiv.innerHTML = ''; // Limpiar el contenedor
 
-                // Mostrar cada estado
-                for (var id in estados) {
-                    var estado = estados[id];
-                    var estadoElement = document.createElement("p");
-                    estadoElement.innerHTML = `<strong>${estado.usuario}</strong> se siente <strong>${estado.estado}</strong>${estado.razon ? ' porque ' + estado.razon : ''}.`;
-                    ultimosEstadosDiv.appendChild(estadoElement);
-                }
-            });
+                    // Mostrar cada estado
+                    data.forEach(estado => {
+                        const estadoElement = document.createElement("p");
+                        estadoElement.innerHTML = `<strong>${estado.usuario}</strong> se siente <strong>${estado.estado}</strong>${estado.razon ? ' porque ' + estado.razon : ''}.`;
+                        ultimosEstadosDiv.appendChild(estadoElement);
+                    });
+                });
         }
 
         // Cargar los estados al cargar la página
-        document.addEventListener("DOMContentLoaded", mostrarEstados);
-
-        // Recomendación basada en palabras clave (puedes agregar esta lógica si la necesitas)
-        function recomendarHistoria(estado) {
-            var historias = []; // Aquí puedes agregar la lógica de las historias de superación
-            var recomendacion = document.getElementById("post-recommendation");
-            recomendacion.innerHTML = "<p>Sin historias de superación recomendadas por ahora.</p>"; // Placeholder por ahora
-
-            // Puedes actualizar la lógica más adelante si decides añadir palabras clave o similar
-        }
+        document.addEventListener("DOMContentLoaded", function() {
+            mostrarEstados(); // Mostrar los estados guardados en el archivo JSON
+            mostrarUsuario(); // Mostrar el nombre de usuario si la sesión está iniciada
+        });
     </script>
 
 </body>

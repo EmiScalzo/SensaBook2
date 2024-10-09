@@ -1,0 +1,12 @@
+[
+    {
+        "usuario": "usuario1",
+        "estado": "Feliz",
+        "razon": "Porque aprobé el examen"
+    },
+    {
+        "usuario": "usuario2",
+        "estado": "Triste",
+        "razon": "Porque perdí mi mascota"
+    }
+]

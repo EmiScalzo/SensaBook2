@@ -21,6 +21,21 @@
         </form>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        function crearPerfil() {
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+
+            if (username && password) {
+                // Guardar el nombre de usuario en localStorage
+                localStorage.setItem('username', username);
+                alert("Perfil creado exitosamente.");
+                window.location.href = "index.html"; // Redirigir a la página principal
+            } else {
+                alert("Por favor, completa todos los campos.");
+            }
+        }
+    </script>
+
 </body>
 </html>

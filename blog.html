@@ -9,36 +9,75 @@
 <body>
 
     <div class="header">
-        <h1>Historias del Blog</h1>
+        <h1>Blog de SensaBook</h1>
         <button onclick="location.href='index.html'" class="button">Inicio</button>
     </div>
 
-    <div class="blog-container">
+    <div class="form-container">
         <h2>Publica tu historia de superación</h2>
-        <form id="historia-form">
+        <form id="blog-form">
             <label for="titulo">Título:</label>
-            <input type="text" id="titulo" placeholder="Título de la historia" required>
-
+            <input type="text" id="titulo" class="input" placeholder="Título de la historia" required>
+            
             <label for="contenido">Contenido:</label>
-            <textarea id="contenido" rows="4" placeholder="Escribe tu historia aquí" required></textarea>
-
-            <label for="palabras-clave">Palabras clave:</label>
-            <input type="text" id="palabras-clave" placeholder="Ingresa palabras clave separadas por comas" required>
-
-            <button type="button" onclick="publicarHistoria()">Publicar</button>
+            <textarea id="contenido" rows="4" class="input" placeholder="Escribe tu historia aquí" required></textarea>
+            
+            <button type="button" onclick="publicarHistoria()" class="button">Publicar Historia</button>
         </form>
-
-        <h2>Historias recomendadas para ti:</h2>
-        <div id="recomendaciones-blog">
-            <!-- Aquí se insertarán las recomendaciones personalizadas -->
-        </div>
-
-        <h2>Otras historias:</h2>
-        <div id="historias-publicadas">
-            <!-- Aquí se insertarán las historias publicadas por otros usuarios -->
-        </div>
     </div>
 
-    <script src="blog.js"></script>
+    <div id="historias-publicadas">
+        <h2>Historias de superación publicadas:</h2>
+    </div>
+
+    <script>
+        function publicarHistoria() {
+            var titulo = document.getElementById("titulo").value;
+            var contenido = document.getElementById("contenido").value;
+
+            if (titulo && contenido) {
+                fetch('historias.json')
+                    .then(response => response.json())
+                    .then(data => {
+                        data.push({
+                            titulo: titulo,
+                            contenido: contenido
+                        });
+
+                        // Guardar la nueva historia en el archivo JSON
+                        const jsonData = JSON.stringify(data);
+                        const blob = new Blob([jsonData], { type: 'application/json' });
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(blob);
+                        link.download = 'historias.json';
+                        link.click();
+                    });
+
+                alert("Historia publicada correctamente.");
+                cargarHistorias(); // Actualizar la vista con la nueva historia
+            } else {
+                alert("Por favor, completa todos los campos.");
+            }
+        }
+
+        function cargarHistorias() {
+            fetch('historias.json')
+                .then(response => response.json())
+                .then(data => {
+                    const div = document.getElementById("historias-publicadas");
+                    div.innerHTML = ''; // Limpiar la vista
+
+                    // Mostrar historias
+                    data.forEach(historia => {
+                        const historiaElement = document.createElement("div");
+                        historiaElement.innerHTML = `<h3>${historia.titulo}</h3><p>${historia.contenido}</p>`;
+                        div.appendChild(historiaElement);
+                    });
+                });
+        }
+
+        document.addEventListener("DOMContentLoaded", cargarHistorias);
+    </script>
+
 </body>
 </html>
