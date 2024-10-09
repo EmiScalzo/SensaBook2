@@ -5,13 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SensaBook - Inicio</title>
     <link rel="stylesheet" href="styles.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-database.js"></script>
 </head>
 <body>
 
     <div class="header">
         <h1>SensaBook</h1>
         <button onclick="location.href='perfil.html'" class="button">Perfil</button>
-        <button onclick="location.href='blog.html'" class="button">Blog</button>
         <span>Último estado: <span id="estado-actual">Feliz</span></span>
     </div>
 
@@ -35,6 +38,74 @@
 
     <div id="post-recommendation" class="post-recommendation"></div>
 
-    <script src="script.js"></script>
+    <script>
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBr-pWDSHphwq4w3W1uwuDTNvbqypR5HRE",
+            authDomain: "sensabook2.firebaseapp.com",
+            databaseURL: "https://sensabook2-default-rtdb.firebaseio.com",
+            projectId: "sensabook2",
+            storageBucket: "sensabook2.appspot.com",
+            messagingSenderId: "401163114062",
+            appId: "1:401163114062:web:4f05bb39ec7d9d8df6551f",
+            measurementId: "G-PEFML6K5Y1"
+        };
+
+        // Inicializar Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database(app);
+
+        // Función para enviar el estado emocional
+        function enviarEstado() {
+            var estado = document.getElementById("estado-animo").value;
+            var razon = document.getElementById("razon").value;
+            var username = localStorage.getItem('username');
+
+            if (estado && username) {
+                // Guardar estado en la base de datos Firebase
+                firebase.database().ref('estados').push({
+                    usuario: username,
+                    estado: estado,
+                    razon: razon
+                });
+
+                // Confirmar publicación y actualizar interfaz
+                alert("Estado publicado correctamente.");
+            } else {
+                alert("Por favor, escribe tu estado de ánimo.");
+            }
+        }
+
+        // Función para mostrar los últimos estados
+        function mostrarEstados() {
+            var estadosRef = firebase.database().ref('estados');
+            estadosRef.on('value', function(snapshot) {
+                var estados = snapshot.val();
+                var ultimosEstadosDiv = document.getElementById("ultimos-estados");
+                ultimosEstadosDiv.innerHTML = '';
+
+                // Mostrar cada estado
+                for (var id in estados) {
+                    var estado = estados[id];
+                    var estadoElement = document.createElement("p");
+                    estadoElement.innerHTML = `<strong>${estado.usuario}</strong> se siente <strong>${estado.estado}</strong>${estado.razon ? ' porque ' + estado.razon : ''}.`;
+                    ultimosEstadosDiv.appendChild(estadoElement);
+                }
+            });
+        }
+
+        // Cargar los estados al cargar la página
+        document.addEventListener("DOMContentLoaded", mostrarEstados);
+
+        // Recomendación basada en palabras clave (puedes agregar esta lógica si la necesitas)
+        function recomendarHistoria(estado) {
+            var historias = []; // Aquí puedes agregar la lógica de las historias de superación
+            var recomendacion = document.getElementById("post-recommendation");
+            recomendacion.innerHTML = "<p>Sin historias de superación recomendadas por ahora.</p>"; // Placeholder por ahora
+
+            // Puedes actualizar la lógica más adelante si decides añadir palabras clave o similar
+        }
+    </script>
+
 </body>
 </html>
