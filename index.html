@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SensaBook - Inicio</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="header">
+        <h1>SensaBook</h1>
+        <button onclick="location.href='perfil.html'" class="button">Perfil</button>
+        <button onclick="location.href='blog.html'" class="button">Blog</button>
+        <span>Último estado: <span id="estado-actual">Feliz</span></span>
+    </div>
+
+    <div class="form-container">
+        <h2>¿Cómo te sientes hoy?</h2>
+        <form id="emotional-form">
+            <label for="estado-animo">Escribe tu estado de ánimo:</label>
+            <input type="text" id="estado-animo" class="input" placeholder="Escribe tu estado de ánimo">
+
+            <label for="razon">Razón (opcional):</label>
+            <input type="text" id="razon" class="input" placeholder="¿Por qué te sientes así?">
+            
+            <button type="button" onclick="enviarEstado()" class="button">Enviar</button>
+        </form>
+    </div>
+
+    <div class="profile-container">
+        <h3>Últimos estados:</h3>
+        <div id="ultimos-estados"></div>
+    </div>
+
+    <div id="post-recommendation" class="post-recommendation"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

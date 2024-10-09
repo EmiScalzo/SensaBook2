@@ -1,0 +1,14 @@
+[
+    {
+        "id": 1,
+        "title": "Cómo superé mi ansiedad laboral",
+        "content": "Fue difícil, pero con ayuda de mi familia y terapia, logré salir adelante...",
+        "keywords": ["ansiedad", "trabajo", "superar"]
+    },
+    {
+        "id": 2,
+        "title": "Cómo encontré motivación en tiempos difíciles",
+        "content": "La vida laboral puede ser muy dura, pero recordé mi pasión por el arte...",
+        "keywords": ["motivación", "difícil", "arte"]
+    }
+]

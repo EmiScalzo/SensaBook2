@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SensaBook - Blog</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="header">
+        <h1>Historias del Blog</h1>
+        <button onclick="location.href='index.html'" class="button">Inicio</button>
+    </div>
+
+    <div class="blog-container">
+        <h2>Publica tu historia de superación</h2>
+        <form id="historia-form">
+            <label for="titulo">Título:</label>
+            <input type="text" id="titulo" placeholder="Título de la historia" required>
+
+            <label for="contenido">Contenido:</label>
+            <textarea id="contenido" rows="4" placeholder="Escribe tu historia aquí" required></textarea>
+
+            <label for="palabras-clave">Palabras clave:</label>
+            <input type="text" id="palabras-clave" placeholder="Ingresa palabras clave separadas por comas" required>
+
+            <button type="button" onclick="publicarHistoria()">Publicar</button>
+        </form>
+
+        <h2>Historias recomendadas para ti:</h2>
+        <div id="recomendaciones-blog">
+            <!-- Aquí se insertarán las recomendaciones personalizadas -->
+        </div>
+
+        <h2>Otras historias:</h2>
+        <div id="historias-publicadas">
+            <!-- Aquí se insertarán las historias publicadas por otros usuarios -->
+        </div>
+    </div>
+
+    <script src="blog.js"></script>
+</body>
+</html>
